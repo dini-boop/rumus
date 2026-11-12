@@ -1,41 +1,102 @@
 import 'package:flutter/material.dart';
 
-void main() => runApp(MyApp());
+void main() => runApp(const MyApp());
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-  // This widget is the root of your application.
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      // Application name
-      title: 'Flutter Hello World',
-      // Application theme data, you can set the colors for the application as
-      // you want
-      theme: ThemeData(
-        // useMaterial3: false,
-        primarySwatch: Colors.blue,
-      ),
-      // A widget which will be started on application startup
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+    return const MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: HitungJarak(),
     );
   }
 }
 
-class MyHomePage extends StatelessWidget {
-  final String title;
-  const MyHomePage({super.key, required this.title});  
+class HitungJarak extends StatefulWidget {
+  const HitungJarak({super.key});
+
+  @override
+  State<HitungJarak> createState() => _HitungJarakState();
+}
+
+class _HitungJarakState extends State<HitungJarak> {
+  final waktuCtrl = TextEditingController();
+  final kecepatanCtrl = TextEditingController();
+  String hasil = '';
+
+  void hitung() {
+    final t = double.tryParse(waktuCtrl.text);
+    final v = double.tryParse(kecepatanCtrl.text);
+
+    if (t == null || v == null) {
+      setState(() => hasil = 'Isi angka dengan benar');
+      return;
+    }
+
+    final s = t * v;
+
+    setState(() => hasil = 'S = $t x $v = $s');
+  }
+
+  @override
+  void dispose() {
+    waktuCtrl.dispose();
+    kecepatanCtrl.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        // The title text which will be shown on the action bar
-        title: Text(title),
+        title: const Text('Menghitung Jarak (S)'),
       ),
-      body: Center(
-        child: Text(
-          'Hello, World!',
+      body: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          children: [
+            const Text(
+              'Rumus: S = t x v',
+              style: TextStyle(fontSize: 20),
+            ),
+            const SizedBox(height: 20),
+            TextField(
+              controller: waktuCtrl,
+              keyboardType: const TextInputType.numberWithOptions(
+                decimal: true,
+              ),
+              decoration: const InputDecoration(
+                labelText: 't = waktu',
+                border: OutlineInputBorder(),
+              ),
+            ),
+            const SizedBox(height: 15),
+            TextField(
+              controller: kecepatanCtrl,
+              keyboardType: const TextInputType.numberWithOptions(
+                decimal: true,
+              ),
+              decoration: const InputDecoration(
+                labelText: 'v = kecepatan',
+                border: OutlineInputBorder(),
+              ),
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: hitung,
+              child: const Text('Cari Jarak (S)'),
+            ),
+            const SizedBox(height: 20),
+            Text(
+              hasil,
+              style: const TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
         ),
       ),
     );
